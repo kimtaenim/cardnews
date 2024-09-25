@@ -182,7 +182,11 @@
             vertical: 30,
             top: 40,
             bottom: 40,
-            textOffset: 15
+            textOffset: 15,
+        };
+
+        const signaturePadding = {
+            bottom: 20, // Signature의 하단 패딩
         };
 
         function loadImage(event, canvas, size, callback) {
@@ -266,7 +270,9 @@
                 fontFamily: options.fontType
             });
 
-            const topPosition = options.position === 'top' ? padding.top : options.position === 'center' ? (canvasSize - height - padding.vertical) / 2 : canvasSize - height - padding.bottom;
+            // 메인 텍스트의 하단 위치를 더 위로 올림
+            const textBottomPadding = padding.bottom + 50; // 50 픽셀 추가
+            const topPosition = options.position === 'top' ? padding.top : options.position === 'center' ? (canvasSize - height - padding.vertical) / 2 : canvasSize - height - textBottomPadding;
             rect.set({ left: (canvasSize - (width + padding.horizontal * 2)) / 2, top: topPosition });
             text.set({ left: (canvasSize - width) / 2, top: topPosition + padding.textOffset });
 
@@ -283,9 +289,10 @@
                     fontFamily: 'Noto Sans, sans-serif' // 산세리프 글꼴
                 });
 
+                // Signature를 더 아래로 내림
                 signatureText.set({
                     left: canvasSize - padding.horizontal - signatureText.width,
-                    top: canvasSize - padding.bottom - signatureText.height,
+                    top: canvasSize - signaturePadding.bottom - signatureText.height,
                 });
 
                 canvas.add(signatureText);
