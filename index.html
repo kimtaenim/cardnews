@@ -1,13 +1,14 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>cardNews0.01</title>
-    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <!-- KoPub Batang 폰트 추가 -->
+    <link href="https://fonts.googleapis.com/css2?family=KoPub+Batang&family=Nanum+Gothic:wght@400;700&family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>
     <style>
         body {
-            font-family: 'Malgun Gothic', 'Nanum Gothic', 'Noto Sans', sans-serif;
+            font-family: 'KoPub Batang', 'Malgun Gothic', 'Nanum Gothic', 'Noto Sans', sans-serif;
             background-color: #f4f4f4;
             margin: 0;
             padding: 0;
@@ -105,8 +106,9 @@
         </div>
         <div class="radio-group">
             <label>Text Alignment: </label>
-            <label><input type="radio" name="textAlign" value="left"> Left</label>
-            <label><input type="radio" name="textAlign" value="center" checked> Center</label>
+            <!-- 기본 정렬을 Left로 변경 -->
+            <label><input type="radio" name="textAlign" value="left" checked> Left</label>
+            <label><input type="radio" name="textAlign" value="center"> Center</label>
             <label><input type="radio" name="textAlign" value="right"> Right</label>
         </div>
         <div class="radio-group">
@@ -128,7 +130,7 @@
     <script>
         const previewCanvas = new fabric.Canvas('previewCanvas');
         const fullCanvas = new fabric.Canvas('fullCanvas');
-        const defaultFontSize = 80;
+        const defaultFontSize = 55 ; // 글씨 크기를 75%로 줄임
 
         const padding = {
             horizontal: 60,
@@ -213,41 +215,40 @@
                 fill: options.color,
                 textAlign: options.align,
                 width,
-                fontFamily: 'Malgun Gothic, Nanum Gothic, Noto Sans, sans-serif'
+                fontFamily: 'KoPub Batang, Malgun Gothic, Nanum Gothic, Noto Sans, sans-serif' // 폰트를 KoPub으로 변경
             });
 
             const topPosition = options.position === 'top' ? padding.top : options.position === 'center' ? (canvasSize - height - padding.vertical) / 2 : canvasSize - height - padding.bottom;
             rect.set({ left: (canvasSize - (width + padding.horizontal * 2)) / 2, top: topPosition });
-            text.set({ left: (canvasSize - width) / 2, top: topPosition + padding.text
-                , textOffset });
+            text.set({ left: (canvasSize - width) / 2, top: topPosition + padding.textOffset });
 
-canvas.add(rect);
-canvas.add(text);
-}
+            canvas.add(rect);
+            canvas.add(text);
+        }
 
-function renderCanvas() {
-fullCanvas.clear();
-loadImage({ target: { files: [document.getElementById('imageUpload').files[0]] } }, fullCanvas, 1080, () => {
-    addTextToCanvas(getTextOptions(), fullCanvas, 1080);
-    const dataURL = fullCanvas.toDataURL({ format: 'png' });
-    fabric.Image.fromURL(dataURL, function(img) {
-        img.scaleToWidth(360);
-        img.scaleToHeight(360);
-        previewCanvas.clear();
-        previewCanvas.add(img);
-        img.moveTo(0);
-    });
-});
-}
+        function renderCanvas() {
+            fullCanvas.clear();
+            loadImage({ target: { files: [document.getElementById('imageUpload').files[0]] } }, fullCanvas, 1080, () => {
+                addTextToCanvas(getTextOptions(), fullCanvas, 1080);
+                const dataURL = fullCanvas.toDataURL({ format: 'png' });
+                fabric.Image.fromURL(dataURL, function(img) {
+                    img.scaleToWidth(360);
+                    img.scaleToHeight(360);
+                    previewCanvas.clear();
+                    previewCanvas.add(img);
+                    img.moveTo(0);
+                });
+            });
+        }
 
-function downloadImage() {
-const link = document.createElement('a');
-link.href = fullCanvas.toDataURL({ format: 'png' });
-link.download = 'cardnews.png';
-link.click();
-}
+        function downloadImage() {
+            const link = document.createElement('a');
+            link.href = fullCanvas.toDataURL({ format: 'png' });
+            link.download = 'cardnews.png';
+            link.click();
+        }
 
-document.getElementById('imageUpload').addEventListener('change', renderCanvas);
-</script>
+        document.getElementById('imageUpload').addEventListener('change', renderCanvas);
+    </script>
 </body>
 </html>
