@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>cardNews0.01</title>
+    <title>cardNews0.011</title>
     <!-- KoPub Batang 폰트 추가 -->
-    <link href="https://fonts.googleapis.com/css2?family=KoPub+Batang&family=Nanum+Gothic:wght@400;700&family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=KoPub+Batang&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>
     <style>
         body {
@@ -86,7 +86,7 @@
     </style>
 </head>
 <body>
-    <h1>cardNews0.01</h1>
+    <h1>cardNews0.011</h1>
     <div class="control-panel">
         <div style="width: 100%;">
             <input type="file" id="imageUpload" accept="image/*">
@@ -112,6 +112,12 @@
             <label><input type="radio" name="textAlign" value="right"> Right</label>
         </div>
         <div class="radio-group">
+            <label>Font Size: </label>
+            <label><input type="radio" name="fontSize" value="80"> Large</label>
+            <label><input type="radio" name="fontSize" value="60" checked> Middle</label>
+            <label><input type="radio" name="fontSize" value="45"> Small</label>
+        </div>
+        <div class="radio-group">
             <label>Background Color: </label>
             <label><input type="radio" name="bgColor" value="white" checked> White</label>
             <label><input type="radio" name="bgColor" value="gray"> Gray</label>
@@ -130,7 +136,7 @@
     <script>
         const previewCanvas = new fabric.Canvas('previewCanvas');
         const fullCanvas = new fabric.Canvas('fullCanvas');
-        const defaultFontSize = 55 ; // 글씨 크기를 75%로 줄임
+        // defaultFontSize 변수를 제거하고 선택된 폰트 크기를 사용합니다.
 
         const padding = {
             horizontal: 60,
@@ -182,6 +188,7 @@
                 color: document.querySelector('input[name="textColor"]:checked').value,
                 position: document.querySelector('input[name="textPosition"]:checked').value,
                 align: document.querySelector('input[name="textAlign"]:checked').value,
+                size: parseInt(document.querySelector('input[name="fontSize"]:checked').value),
             };
         }
 
@@ -201,7 +208,7 @@
         }
 
         function addTextToCanvas(options, canvas, canvasSize) {
-            const fontSize = calculateFontSize(options.text, canvasSize, defaultFontSize, canvasSize);
+            const fontSize = calculateFontSize(options.text, canvasSize, options.size, canvasSize);
             const { width, height } = calculateTextBoxDimensions(options.text, fontSize, canvasSize);
             const rectColor = options.color === 'white' ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.5)';
 
@@ -215,7 +222,7 @@
                 fill: options.color,
                 textAlign: options.align,
                 width,
-                fontFamily: 'KoPub Batang, Malgun Gothic, Nanum Gothic, Noto Sans, sans-serif' // 폰트를 KoPub으로 변경
+                fontFamily: 'KoPub Batang, Malgun Gothic, Nanum Gothic, Noto Sans, sans-serif'
             });
 
             const topPosition = options.position === 'top' ? padding.top : options.position === 'center' ? (canvasSize - height - padding.vertical) / 2 : canvasSize - height - padding.bottom;
