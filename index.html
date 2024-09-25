@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>cardNews0.011</title>
-    <!-- KoPub Batang 폰트 추가 -->
-    <link href="https://fonts.googleapis.com/css2?family=KoPub+Batang&family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <!-- 폰트 추가 -->
+    <link href="https://fonts.googleapis.com/css2?family=KoPub+Batang&family=KoPub+Dotum&family=Nanum+Gothic&family=Noto+Sans&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>
     <style>
         body {
-            font-family: 'KoPub Batang', 'Malgun Gothic', 'Nanum Gothic', 'Noto Sans', sans-serif;
+            font-family: 'KoPub Batang', 'Malgun Gothic', 'Nanum Gothic', 'Noto Sans', serif;
             background-color: #f4f4f4;
             margin: 0;
             padding: 0;
@@ -30,7 +30,8 @@
             width: 360px;
             max-width: 100%;
         }
-        .control-panel input[type="text"] {
+        .control-panel input[type="text"],
+        .control-panel select {
             width: 100%;
             padding: 10px;
             font-size: 16px;
@@ -55,11 +56,13 @@
         .control-panel .radio-options {
             display: flex;
             justify-content: space-between;
+            flex-wrap: wrap;
         }
         .control-panel .radio-options label {
             width: 33.33%;
             display: flex;
             align-items: center;
+            margin-bottom: 5px;
         }
         .control-panel .radio-options input {
             margin-right: 5px;
@@ -106,6 +109,15 @@
         <!-- Your Signature 입력 필드 추가 -->
         <label>Your Signature:</label>
         <input type="text" id="signatureInput">
+
+        <!-- 폰트 종류 선택 기능 수정: 드롭다운 메뉴로 변경 -->
+        <label>Font Type:</label>
+        <select id="fontTypeSelect">
+            <option value="'KoPub Batang', serif" selected>KoPub Batang</option>
+            <option value="'KoPub Dotum', sans-serif">KoPub Dotum</option>
+            <option value="'Nanum Gothic', sans-serif">Nanum Gothic</option>
+            <option value="'Noto Sans', sans-serif">Noto Sans</option>
+        </select>
 
         <div class="radio-group">
             <label>Text Color:</label>
@@ -213,6 +225,7 @@
             return {
                 text: document.getElementById('textInput').value,
                 signature: document.getElementById('signatureInput').value,
+                fontType: document.getElementById('fontTypeSelect').value,
                 color: document.querySelector('input[name="textColor"]:checked').value,
                 position: document.querySelector('input[name="textPosition"]:checked').value,
                 align: document.querySelector('input[name="textAlign"]:checked').value,
@@ -250,7 +263,7 @@
                 fill: options.color,
                 textAlign: options.align,
                 width,
-                fontFamily: 'KoPub Batang, Malgun Gothic, Nanum Gothic, Noto Sans, sans-serif'
+                fontFamily: options.fontType
             });
 
             const topPosition = options.position === 'top' ? padding.top : options.position === 'center' ? (canvasSize - height - padding.vertical) / 2 : canvasSize - height - padding.bottom;
@@ -262,7 +275,7 @@
 
             // Your Signature 추가
             if (options.signature) {
-                const signatureFontSize = 20; // 작은 글씨 크기
+                const signatureFontSize = 30; // 글씨 크기를 30으로 조정
                 const signatureText = new fabric.Text(options.signature, {
                     fontSize: signatureFontSize,
                     fill: options.color,
