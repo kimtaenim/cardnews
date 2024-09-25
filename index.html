@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>cardNews0.011</title>
     <!-- KoPub Batang 폰트 추가 -->
-    <link href="https://fonts.googleapis.com/css2?family=KoPub+Batang&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=KoPub+Batang&family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>
     <style>
         body {
@@ -45,15 +45,24 @@
             color: #333;
         }
         .control-panel .radio-group {
-            display: flex;
-            flex-direction: column;
             margin-bottom: 10px;
         }
-        .control-panel .radio-group input {
-            margin-right: 5px;
-        }
         .control-panel .radio-group label {
-            margin: 0 5px 0 0;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .control-panel .radio-options {
+            display: flex;
+            justify-content: space-between;
+        }
+        .control-panel .radio-options label {
+            width: 33.33%;
+            display: flex;
+            align-items: center;
+        }
+        .control-panel .radio-options input {
+            margin-right: 5px;
         }
         .control-panel button {
             padding: 10px 20px;
@@ -91,38 +100,57 @@
         <div style="width: 100%;">
             <input type="file" id="imageUpload" accept="image/*">
         </div>
-        <label>Text:            (KimTae 2024) </label>
+        <label>Text: (KimTae 2024)</label>
         <input type="text" id="textInput">
+        
+        <!-- Your Signature 입력 필드 추가 -->
+        <label>Your Signature:</label>
+        <input type="text" id="signatureInput">
+
         <div class="radio-group">
-            <label>Text Color: </label>
-            <label><input type="radio" name="textColor" value="white" checked> White</label>
-            <label><input type="radio" name="textColor" value="black"> Black</label>
+            <label>Text Color:</label>
+            <div class="radio-options">
+                <label><input type="radio" name="textColor" value="white" checked> White</label>
+                <label><input type="radio" name="textColor" value="black"> Black</label>
+            </div>
         </div>
+
         <div class="radio-group">
-            <label>Text Position: </label>
-            <label><input type="radio" name="textPosition" value="top"> Top</label>
-            <label><input type="radio" name="textPosition" value="center" checked> Center</label>
-            <label><input type="radio" name="textPosition" value="bottom"> Bottom</label>
+            <label>Text Position:</label>
+            <div class="radio-options">
+                <label><input type="radio" name="textPosition" value="top"> Top</label>
+                <label><input type="radio" name="textPosition" value="center" checked> Center</label>
+                <label><input type="radio" name="textPosition" value="bottom"> Bottom</label>
+            </div>
         </div>
+
         <div class="radio-group">
-            <label>Text Alignment: </label>
-            <!-- 기본 정렬을 Left로 변경 -->
-            <label><input type="radio" name="textAlign" value="left" checked> Left</label>
-            <label><input type="radio" name="textAlign" value="center"> Center</label>
-            <label><input type="radio" name="textAlign" value="right"> Right</label>
+            <label>Text Alignment:</label>
+            <div class="radio-options">
+                <label><input type="radio" name="textAlign" value="left" checked> Left</label>
+                <label><input type="radio" name="textAlign" value="center"> Center</label>
+                <label><input type="radio" name="textAlign" value="right"> Right</label>
+            </div>
         </div>
+
         <div class="radio-group">
-            <label>Font Size: </label>
-            <label><input type="radio" name="fontSize" value="80"> Large</label>
-            <label><input type="radio" name="fontSize" value="60" checked> Middle</label>
-            <label><input type="radio" name="fontSize" value="45"> Small</label>
+            <label>Font Size:</label>
+            <div class="radio-options">
+                <label><input type="radio" name="fontSize" value="80"> Large</label>
+                <label><input type="radio" name="fontSize" value="60" checked> Middle</label>
+                <label><input type="radio" name="fontSize" value="45"> Small</label>
+            </div>
         </div>
+
         <div class="radio-group">
-            <label>Background Color: </label>
-            <label><input type="radio" name="bgColor" value="white" checked> White</label>
-            <label><input type="radio" name="bgColor" value="gray"> Gray</label>
-            <label><input type="radio" name="bgColor" value="black"> Black</label>
+            <label>Background Color:</label>
+            <div class="radio-options">
+                <label><input type="radio" name="bgColor" value="white" checked> White</label>
+                <label><input type="radio" name="bgColor" value="gray"> Gray</label>
+                <label><input type="radio" name="bgColor" value="black"> Black</label>
+            </div>
         </div>
+
         <div style="width: 100%; display: flex; justify-content: center; margin-top: 20px;">
             <button onclick="renderCanvas()">Preview</button>
             <button onclick="downloadImage()">Save</button>
@@ -136,7 +164,6 @@
     <script>
         const previewCanvas = new fabric.Canvas('previewCanvas');
         const fullCanvas = new fabric.Canvas('fullCanvas');
-        // defaultFontSize 변수를 제거하고 선택된 폰트 크기를 사용합니다.
 
         const padding = {
             horizontal: 60,
@@ -185,6 +212,7 @@
         function getTextOptions() {
             return {
                 text: document.getElementById('textInput').value,
+                signature: document.getElementById('signatureInput').value,
                 color: document.querySelector('input[name="textColor"]:checked').value,
                 position: document.querySelector('input[name="textPosition"]:checked').value,
                 align: document.querySelector('input[name="textAlign"]:checked').value,
@@ -231,6 +259,24 @@
 
             canvas.add(rect);
             canvas.add(text);
+
+            // Your Signature 추가
+            if (options.signature) {
+                const signatureFontSize = 20; // 작은 글씨 크기
+                const signatureText = new fabric.Text(options.signature, {
+                    fontSize: signatureFontSize,
+                    fill: options.color,
+                    textAlign: 'right',
+                    fontFamily: 'Noto Sans, sans-serif' // 산세리프 글꼴
+                });
+
+                signatureText.set({
+                    left: canvasSize - padding.horizontal - signatureText.width,
+                    top: canvasSize - padding.bottom - signatureText.height,
+                });
+
+                canvas.add(signatureText);
+            }
         }
 
         function renderCanvas() {
